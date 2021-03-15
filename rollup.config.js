@@ -15,6 +15,7 @@ module.exports = {
       exclude: 'node_modules/**',
       sourceMaps: true,
       presets: [
+        /* Sleppum babel transpile.. sourcemaps í rugli, TODO ath?
         [
           '@babel/preset-env', {
             useBuiltIns: 'usage',
@@ -22,6 +23,7 @@ module.exports = {
             targets: '> 0.25%, not dead',
           },
         ],
+        */
       ],
     }),
     resolve(),

@@ -1,6 +1,6 @@
 import { fetchEarthquakes } from './lib/earthquakes';
 import { el, element, formatDate } from './lib/utils';
-import { init, createPopup } from './lib/map';
+import { init, createPopup, clearMarkers } from './lib/map';
 
 async function index(type, period) {
   // Tökum hidden úr loading elementinu
@@ -10,42 +10,26 @@ async function index(type, period) {
   const earthquakes = await fetchEarthquakes(type, period);
   console.log('earthquakes :>> ', earthquakes);
 
-  // bætum hidden aftur við loading þegar upplýsingar hafa verið sóttar
-  loading.classList.add('.hidden');
+  // Burt með gamla markers
+  clearMarkers();
 
-  // const parent = loading.parentNode;
-  // loading.textContent = '';
+  // bætum hidden aftur við loading þegar upplýsingar hafa verið sóttar
+  loading.classList.add('hidden');
 
   if (!earthquakes) {
     document.appendChild(el('p', 'Villa við að sækja gögn'));
   }
 
-  const timeCheck = document.querySelectorAll('.cache');
   const timeNode = document.querySelector('.cache');
   const ul = document.querySelector('.earthquakes');
-  const map = document.querySelector('.map');
 
   const { elapsed, cache } = earthquakes.info;
 
-  console.log('timeCheck.length :>> ', timeCheck.length);
-
-  // if (timeCheck.length > 0) {
-  //   timeCheck.forEach((node) => {
-  //     console.log('node :>> ', node);
-  //     node.remove();
-  //   });
-  // }
-
-  timeNode.appendChild(
-    element(
-      'p',
-      `Fyrirspurn tók ${elapsed} sekúndur. Gögn eru ${
-        cache ? '' : 'ekki'
-      } í cache`,
-    ),
-  );
-
-  init(map);
+  // Einföldum! Breytum bara texta í nóðu og hugsum ekki um að bæta við/fjarlægja nóðum innan
+  const cacheText = `Fyrirspurn tók ${elapsed} sekúndur. Gögn eru ${
+    cache ? '' : 'ekki'
+  } í cache`;
+  timeNode.textContent = cacheText;
 
   earthquakes.data.features.forEach((quake) => {
     const { title, mag, time, url } = quake.properties;
@@ -103,12 +87,25 @@ document.addEventListener('DOMContentLoaded', async () => {
   // Nota proxy
   // Hreinsa header og upplýsingar þegar ný gögn eru sótt
   // Sterkur leikur að refactora úr virkni fyrir event handler í sér fall
+  const map = document.querySelector('.map');
+  init(map);
 
   const linkar = document.querySelectorAll('ul.nav a');
 
   linkar.forEach((link) => {
     link.addEventListener('click', async (e) => {
       e.preventDefault();
+
+      const ul = document.querySelector('.cache');
+      if (ul.hasChildNodes()) {
+        const list = ul.querySelectorAll('li');
+        list.forEach((li) => {
+          ul.removeChild(li);
+        });
+      }
+
+      const loading = document.querySelector('.loading');
+      loading.classList.remove('hidden');
 
       const url = new URL(link.href);
       const { searchParams } = url;
