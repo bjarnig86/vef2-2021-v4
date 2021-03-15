@@ -1,11 +1,9 @@
 import { fetchEarthquakes } from './lib/earthquakes';
 import { el, element, formatDate } from './lib/utils';
 import { init, createPopup } from './lib/map';
-import { pl } from 'date-fns/locale';
 
 async function index(type, period) {
   // Tökum hidden úr loading elementinu
-  debugger;
   const loading = document.querySelector('.loading');
   loading.classList.remove('.hidden');
 
@@ -31,15 +29,15 @@ async function index(type, period) {
 
   console.log('timeCheck.length :>> ', timeCheck.length);
 
-  if (timeCheck.length > 0) {
-    timeCheck.forEach((node) => {
-      console.log('node :>> ', node);
-      node.remove();
-    });
-  }
+  // if (timeCheck.length > 0) {
+  //   timeCheck.forEach((node) => {
+  //     console.log('node :>> ', node);
+  //     node.remove();
+  //   });
+  // }
 
   timeNode.appendChild(
-    el(
+    element(
       'p',
       `Fyrirspurn tók ${elapsed} sekúndur. Gögn eru ${
         cache ? '' : 'ekki'
