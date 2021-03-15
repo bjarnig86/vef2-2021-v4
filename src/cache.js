@@ -12,13 +12,14 @@ const { REDIS_URL: redisURL } = process.env;
 export const router = express.Router();
 
 let client;
+let asyncGet;
+let asyncSet;
 
 if (redisURL) {
   client = redis.createClient({ url: redisURL });
+  asyncGet = util.promisify(client.get).bind(client);
+  asyncSet = util.promisify(client.mset).bind(client);
 }
-
-const asyncGet = util.promisify(client.get).bind(client);
-const asyncSet = util.promisify(client.mset).bind(client);
 
 /**
  * Returns cached data or null if not cached.
